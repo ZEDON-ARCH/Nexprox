@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "server.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/login.html",        "dest": "/login.html" },
+    { "src": "/style.css",         "dest": "/style.css" },
+    { "src": "/app.js",            "dest": "/app.js" },
+    { "src": "/logo.png",          "dest": "/logo.png" },
+    { "src": "/world.geo.json",    "dest": "/world.geo.json" },
+    { "src": "/world.svg",         "dest": "/world.svg" },
+    { "src": "/world_lo.svg",      "dest": "/world_lo.svg" },
+    { "src": "/index.html",        "dest": "/index.html" },
+    { "src": "/(.*)",              "dest": "/server.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "nexprox-dashboard",
+  "version": "2.0.0",
+  "description": "Professional Proxy Management Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["proxy", "dashboard", "tunnel", "socks5", "vpn"],
+  "author": "Nexprox Team",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {}
+}
