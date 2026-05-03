@@ -14,8 +14,8 @@ const zlib = require('zlib');
 const PORT = process.env.PORT || 3000;
 const MASTER_PASS = process.env.MASTER_PASS || 'NEXPROX_DEV_2026';
 
-const MAIL_USER = process.env.MAIL_USER || 'verifiedzedon@gmail.com';
-const MAIL_PASS = process.env.MAIL_PASS || 'mocy bccy fiyo iykd'.replace(/ /g, '');  // app password
+const MAIL_USER = process.env.MAIL_USER || 'User_address@gmail.com'; //change to your email addresss
+const MAIL_PASS = process.env.MAIL_PASS || 'm0cy dcay fiy0 lykb'.replace(/ /g, '');  // app password (input app password from you email)
 
 if (!process.env.MAIL_USER) {
     console.log('[MAIL] Using default credentials. Set MAIL_USER/MAIL_PASS env vars for production.');
