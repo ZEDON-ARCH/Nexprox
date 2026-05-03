@@ -1045,7 +1045,7 @@
     var dlTimer = null;
     var iconClicks    = 0;
     var activeAuthCode = '';
-    var adminMail = 'verifiedzedon' + '@' + 'gmail.com';
+    var adminMail = 'user_address' + '@' + 'gmail.com' //change the user_address to your decided email address e.g useraddress
 
     function genAuthCode() {
         var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
