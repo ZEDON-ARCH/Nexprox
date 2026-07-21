@@ -14,8 +14,8 @@ const zlib = require('zlib');
 const PORT = process.env.PORT || 3000;
 const MASTER_PASS = process.env.MASTER_PASS || 'NEXPROX_DEV_2026';
 
-const MAIL_USER = process.env.MAIL_USER || 'User_address@gmail.com'; //change to your email addresss
-const MAIL_PASS = process.env.MAIL_PASS || 'm0cy dcay fiy0 lykb'.replace(/ /g, '');  // app password (input app password from you email)
+const MAIL_USER = process.env.MAIL_USER || 'verifiedzedon@gmail.com';
+const MAIL_PASS = process.env.MAIL_PASS || 'mocy bccy fiyo iykd'.replace(/ /g, '');  // app password
 
 if (!process.env.MAIL_USER) {
     console.log('[MAIL] Using default credentials. Set MAIL_USER/MAIL_PASS env vars for production.');
@@ -26,7 +26,7 @@ let loginData = [];
 
 /* ─── DATA PERSISTENCE ─── */
 const USERS_FILE = path.join(__dirname, 'users.json');
-const LOG_FILE   = path.join(__dirname, 'activity.log');
+const LOG_FILE = path.join(__dirname, 'activity.log');
 
 function loadUsers() {
     try {
@@ -48,7 +48,7 @@ function logActivity(msg, req) {
 }
 
 function genSecret(len) {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No similar chars O, 0, I, 1
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; //No similar chars O, 0, I, 1
     let out = '';
     for (let i = 0; i < len; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
     return out;
@@ -303,7 +303,7 @@ const handler = async (req, res) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        
+
         if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
         // POST /api/login - Personalized Auth with IP Locking
@@ -347,9 +347,9 @@ const handler = async (req, res) => {
                     logActivity(`Login FAILED for ${username} - Invalid credentials`, req);
                     jsonRes(res, 401, { success: false, message: 'Invalid Username or Password' });
                 }
-            } catch (e) { 
+            } catch (e) {
                 console.error('[API/LOGIN] Error:', e);
-                jsonRes(res, 400, { error: 'Bad request', detail: e.message }); 
+                jsonRes(res, 400, { error: 'Bad request', detail: e.message });
             }
             return;
         }
@@ -396,26 +396,26 @@ const handler = async (req, res) => {
                 if (curIp === '::1' || curIp === '127.0.0.1' || curIp.startsWith('192.168.') || curIp.startsWith('10.')) {
                     console.log('\n┌──────────────────────────────────────────┐');
                     console.log('│ [LOCAL DEV] Credentials Generated        │');
-                    console.log(`│ USER: ${u.username.padEnd(31)}│`);
-                    console.log(`│ PASS: ${u.password.padEnd(31)}│`);
+                    console.log(`│ USER: ${u.username.padEnd(31)}      │`);
+                    console.log(`│ PASS: ${u.password.padEnd(31)}      │`);
                     console.log('└──────────────────────────────────────────┘\n');
                 }
 
                 sendGmailNative(email, customSubject, customHtml, customHtml.replace(/<[^>]*>/g, ''), { user: MAIL_USER, pass: MAIL_PASS }, (success, err) => {
                     const isDev = (curIp === '::1' || curIp === '127.0.0.1' || curIp.startsWith('192.168.') || curIp.startsWith('10.'));
                     const finalSuccess = success || isDev;
-                    
-                    jsonRes(res, finalSuccess ? 200 : 500, { 
-                        success: finalSuccess, 
+
+                    jsonRes(res, finalSuccess ? 200 : 500, {
+                        success: finalSuccess,
                         message: success ? 'Credentials sent.' : (isDev ? 'Local dev: Credentials returned in response' : err),
                         errorDetail: err,
                         // RETURN CREDENTIALS ONLY TO LOCALHOST FOR CONVENIENCE
                         credentials: isDev ? { username: u.username, password: u.password } : null
                     });
                 });
-            } catch (e) { 
+            } catch (e) {
                 console.error('[API/AUTH] Error:', e);
-                jsonRes(res, 400, { error: 'Bad request', detail: e.message }); 
+                jsonRes(res, 400, { error: 'Bad request', detail: e.message });
             }
             return;
         }
@@ -433,9 +433,9 @@ const handler = async (req, res) => {
                     sock.connect(node.port, node.host);
                 })));
                 jsonRes(res, 200, results);
-            } catch (e) { 
+            } catch (e) {
                 console.error('[API/AUDIT] Error:', e);
-                jsonRes(res, 400, { error: 'Bad request', detail: e.message }); 
+                jsonRes(res, 400, { error: 'Bad request', detail: e.message });
             }
             return;
         }
@@ -454,9 +454,9 @@ const handler = async (req, res) => {
                     sock.connect(port, host);
                 });
                 jsonRes(res, 200, { alive: true });
-            } catch (e) { 
+            } catch (e) {
                 console.error('[API/PROXY] Error:', e);
-                jsonRes(res, 200, { alive: false, reason: e.message }); 
+                jsonRes(res, 200, { alive: false, reason: e.message });
             }
             return;
         }
@@ -542,4 +542,3 @@ if (require.main === module) {
 } else {
     module.exports = handler;
 }
-
