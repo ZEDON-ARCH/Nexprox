@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Nexprox — Advanced Proxy Dashboard</title>
     <meta name="description" content="Nexprox: High-speed, secure proxy dashboard with SOCKS5, SOCKS4 and HTTPS tunneling.">
+    <meta name="theme-color" content="#00ff66">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -18,8 +23,8 @@
         <span>NEXPROX</span>
     </div>
     <div class="mobile-topnav-actions">
-        <!-- Servers toggle (tablet+) hidden on pure mobile -->
-        <button class="topnav-icon-btn servers-icon-btn" id="servers-toggle-mobile" title="Routing Servers" aria-label="Toggle Servers" style="display:none">
+        <!-- Servers toggle — visible on tablet AND mobile -->
+        <button class="topnav-icon-btn servers-icon-btn" id="servers-toggle-mobile" title="Routing Servers" aria-label="Toggle Servers">
             <i class="fa-solid fa-server"></i>
         </button>
         <!-- Threat breach icon -->
@@ -496,5 +501,53 @@
 </div>
 
 <script src="app.js"></script>
+<script>
+/* ── PWA: Register Service Worker ── */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('[PWA] Service worker registered:', reg.scope);
+    }).catch(err => console.warn('[PWA] SW registration failed:', err));
+}
+
+/* ── PWA: Capture install prompt & wire download button ── */
+let _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    _pwaPrompt = e;
+    // Show the download button as a real install button
+    const dlBtn = document.getElementById('v-dl-btn');
+    if (dlBtn) {
+        dlBtn.disabled = false;
+        dlBtn.innerHTML = '<i class="fa-solid fa-download" style="font-size:9px;opacity:0.7;"></i> Install App';
+    }
+});
+
+/* Wire download button to PWA install */
+document.addEventListener('DOMContentLoaded', () => {
+    const dlBtn = document.getElementById('v-dl-btn');
+    if (dlBtn) {
+        dlBtn.addEventListener('click', async function () {
+            if (_pwaPrompt) {
+                _pwaPrompt.prompt();
+                const { outcome } = await _pwaPrompt.userChoice;
+                const vMsg = document.getElementById('v-msg');
+                if (vMsg) vMsg.textContent = outcome === 'accepted' ? 'APP INSTALLED SUCCESSFULLY' : 'Install cancelled.';
+                _pwaPrompt = null;
+            } else {
+                // If PWA prompt is not available, download the Windows executable directly
+                const a = document.createElement('a');
+                a.href = '/nexproxy.exe';
+                a.download = 'nexproxy.exe';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                const vMsg = document.getElementById('v-msg');
+                if (vMsg) vMsg.textContent = 'Downloading Nexproxy Core Engine Installer...';
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>

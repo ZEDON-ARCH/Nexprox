@@ -1,449 +1,525 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexprox | Secure Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Roboto+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --bg: #05070a;
-            --primary: #00ff66;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(0, 255, 102, 0.2);
-            --text-muted: #8a8f98;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="description" content="Nexprox Secure Login — Advanced Proxy Dashboard" />
+<meta name="theme-color" content="#00ff66" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="icon" href="logo.png" type="image/png" />
+<link rel="manifest" href="manifest.json" />
+<title>Nexprox | Secure Login</title>
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 50%, #0a1219 0%, #05070a 100%);
-            font-family: 'Outfit', sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            z-index: 10;
-        }
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        .logo {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 4px;
-            color: var(--primary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
+:root {
+  --bg:#05070a;
+  --primary:#00ff66;
+  --primary-glow:rgba(0,255,102,0.25);
+  --glass-bg:rgba(0,0,0,0.62);
+  --glass-border:rgba(0,255,102,0.20);
+  --text:#ffffff;
+  --muted:#8a8f98;
+  --danger:#ff4d4d;
+  --warning:#f5a623;
+  --transition:all .3s cubic-bezier(.4,0,.2,1);
+}
 
-        .tagline {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 32px;
-            letter-spacing: 1px;
-        }
+body {
+  min-height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    radial-gradient(circle at top, rgba(0,255,102,0.06), transparent 30%),
+    #05070a url("world.svg") center/cover no-repeat;
+  font-family:'Outfit',sans-serif;
+  color:var(--text);
+  position:relative;
+}
 
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-            text-align: left;
-        }
+body::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at 50% 30%, rgba(0,0,0,0.2), rgba(5,7,10,0.75));
+  pointer-events:none;
+}
 
-        .input-group i {
-            position: absolute;
-            left: 16px;
-            top: 16px;
-            color: var(--text-muted);
-            font-size: 18px;
-        }
+.login-card {
+  position:relative;
+  z-index:10;
+  width:100%;
+  max-width:420px;
+  padding:40px 30px;
+  border-radius:28px;
+  background:var(--glass-bg);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--glass-border);
+  box-shadow:0 20px 40px rgba(0,0,0,0.45);
+  transition:var(--transition);
+}
 
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 16px 48px 16px 48px;
-            color: white;
-            font-family: inherit;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
+.login-card:hover,
+.login-card:focus-within {
+  border-color:rgba(0,255,102,0.40);
+  box-shadow:0 24px 50px rgba(0,0,0,0.55), 0 0 20px rgba(0,255,102,0.08);
+}
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(0, 255, 102, 0.05);
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
-            transform: scale(1.02);
-        }
+.logo {
+  text-align:center;
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:4px;
+  color:var(--primary);
+  margin-bottom:10px;
+}
 
-        .input-group label {
-            position: absolute;
-            left: 48px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+.tagline {
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:2px;
+  margin-bottom:28px;
+}
 
-        input:focus + label,
-        input:not(:placeholder-shown) + label {
-            top: -12px;
-            left: 12px;
-            font-size: 10px;
-            background: var(--bg);
-            padding: 2px 8px;
-            color: var(--primary);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
+.step { animation:slideFade .45s ease; }
 
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.3s;
-            z-index: 10;
-        }
+@keyframes slideFade {
+  from { opacity:0; transform:translateY(15px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
-        .toggle-password:hover {
-            color: var(--primary);
-        }
+.input-group {
+  position:relative;
+  margin-bottom:24px;
+}
 
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            border: none;
-            border-radius: 12px;
-            color: #000;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
+.input-group i.left-icon {
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-size:16px;
+  pointer-events:none;
+}
 
-        button:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 255, 102, 0.4);
-            filter: brightness(1.1);
-        }
+.input-group input {
+  width:100%;
+  padding:16px 48px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(10,20,30,0.65);
+  color:#fff;
+  font-size:15px;
+  font-family:inherit;
+  transition:var(--transition);
+}
 
-        button:active {
-            transform: translateY(-1px) scale(1.0);
-        }
+.input-group input:focus {
+  outline:none;
+  border-color:var(--primary);
+  background:rgba(0,30,15,0.75);
+  box-shadow:0 0 15px var(--primary-glow);
+}
 
-        .step-transition {
-            animation: slideUpFade 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
+.input-group label {
+  position:absolute;
+  left:48px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:1px;
+  transition:var(--transition);
+  pointer-events:none;
+}
 
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top:-10px;
+  left:12px;
+  font-size:10px;
+  color:var(--primary);
+  background:#05070a;
+  border:1px solid var(--primary);
+  border-radius:20px;
+  padding:2px 8px;
+}
 
-        .error {
-            color: #ff4d4d;
-            font-size: 14px;
-            margin-top: 16px;
-            display: none;
-        }
+#password { padding-right:52px; }
 
-        .footer {
-            margin-top: 25px;
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+.toggle-eye {
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  cursor:pointer;
+  transition:var(--transition);
+}
 
-        .policy-links {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+.toggle-eye:hover { color:var(--primary); }
 
-        .policy-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
+/* Lockout countdown bar */
+.lockout-bar {
+  display:none;
+  width:100%;
+  height:3px;
+  background:rgba(255,77,77,0.2);
+  border-radius:3px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
 
-        .policy-links a:hover {
-            color: var(--primary);
-        }
+.lockout-bar-fill {
+  height:100%;
+  background:var(--danger);
+  border-radius:3px;
+  animation:countdownBar linear forwards;
+  transform-origin:left;
+}
 
-        /* Local Dev Mode Hint */
-        #dev-hint {
-            display: none;
-            background: rgba(0, 255, 102, 0.1);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-    </style>
+@keyframes countdownBar {
+  from { width:100%; }
+  to   { width:0%; }
+}
+
+button {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:40px;
+  background:var(--primary);
+  color:#000;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:var(--transition);
+  font-family:inherit;
+}
+
+button:hover:not(:disabled) {
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(0,255,102,0.35);
+}
+
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.message {
+  display:none;
+  margin-top:14px;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.message.error {
+  display:block;
+  background:rgba(255,77,77,0.10);
+  border-left:3px solid var(--danger);
+  color:var(--danger);
+}
+
+.message.success {
+  display:block;
+  background:rgba(0,255,102,0.08);
+  border-left:3px solid var(--primary);
+  color:var(--primary);
+}
+
+.message.info {
+  display:block;
+  background:rgba(14,165,233,0.08);
+  border-left:3px solid #0ea5e9;
+  color:#7dd3fc;
+}
+
+.message.warning {
+  display:block;
+  background:rgba(245,166,35,0.08);
+  border-left:3px solid var(--warning);
+  color:var(--warning);
+}
+
+.back-link {
+  display:inline-block;
+  margin-top:15px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:11px;
+  transition:var(--transition);
+}
+
+.back-link:hover { color:var(--primary); }
+
+.session-warning {
+  display:none;
+  margin-top:15px;
+  text-align:center;
+  font-size:11px;
+  color:var(--warning);
+}
+
+.footer {
+  margin-top:28px;
+  text-align:center;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:1px;
+}
+
+.policy-links {
+  margin-top:16px;
+  display:flex;
+  justify-content:center;
+  gap:18px;
+}
+
+.policy-links a {
+  color:var(--muted);
+  text-decoration:none;
+  font-size:10px;
+  transition:var(--transition);
+}
+
+.policy-links a:hover { color:var(--primary); }
+
+.hidden { display:none !important; }
+
+@media(max-width:700px) {
+  .login-card { width:90%; padding:32px 22px; }
+}
+
+@media(max-width:480px) {
+  .login-card { padding:24px 18px; }
+  .logo { font-size:24px; }
+}
+</style>
 </head>
 
 <body>
-    <div class="glow"></div>
-    <div class="login-card" id="login-container">
-        <div class="logo">NEXPROX</div>
-        <div class="tagline">SECURE ACCESS GATEWAY</div>
+<div class="login-card">
 
-        <div id="step-email">
-            <div class="tagline" style="margin-bottom: 20px;">ENTER EMAIL ADDRESS</div>
-            <div class="input-group">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="text" id="req-email" placeholder="Address key" autocomplete="off">
-            </div>
-            <button id="request-btn">GENERATE ACCESS KEY</button>
-            <div id="req-msg" class="error" style="color: var(--primary)"></div>
-        </div>
+  <div class="logo">NEXPROX</div>
+  <div class="tagline">SECURE ACCESS GATEWAY</div>
 
-        <div id="step-username" style="display: none;">
-            <div class="tagline" style="margin-bottom: 20px;">ENTER YOUR UNIQUE IDENTITY</div>
-            <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input type="text" id="username" placeholder=" " autocomplete="off">
-                <label>Username</label>
-            </div>
-            <button id="confirm-user-btn">CONFIRM USERNAME</button>
-            <div id="user-msg" class="error"></div>
-            <div style="margin-top: 15px; font-size: 11px;">
-                <a href="#" id="back-to-email" style="color: var(--text-muted); text-decoration: none; letter-spacing: 1px; transition: color 0.2s;">&lt; REQUEST NEW KEY</a>
-            </div>
-        </div>
-
-        <div id="step-password" style="display: none;">
-            <div class="tagline" style="margin-bottom: 20px;">ENTER YOUR SECURE PASSWORD</div>
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="password" placeholder=" ">
-                <label>Password</label>
-                <i class="fa-solid fa-eye toggle-password" id="toggle-p"></i>
-            </div>
-            <button id="login-btn">INITIALIZE HANDSHAKE</button>
-            <div id="error-msg" class="error">INVALID ACCESS CREDENTIALS</div>
-        </div>
-
-        <div class="footer">Encrypted Session v2.5</div>
-        <div class="policy-links">
-            <a href="README.md" target="_blank">PRIVACY POLICY</a>
-            <a href="README.md" target="_blank">TERMS OF SERVICE</a>
-        </div>
+  <!-- EMAIL STEP -->
+  <form id="step-email" class="step" autocomplete="off">
+    <div class="tagline">ENTER EMAIL ADDRESS</div>
+    <div class="input-group">
+      <i class="fa-solid fa-envelope left-icon"></i>
+      <input type="email" id="req-email" placeholder=" " autocomplete="off" />
+      <label for="req-email">Email</label>
     </div>
+    <div class="lockout-bar" id="lockout-bar"><div class="lockout-bar-fill" id="lockout-fill"></div></div>
+    <button type="submit" id="request-btn">GENERATE ACCESS KEY</button>
+    <div id="req-msg" class="message"></div>
+  </form>
 
-    <script>
-        const stepEmail = document.getElementById('step-email');
-        const stepUsername = document.getElementById('step-username');
-        const stepPassword = document.getElementById('step-password');
+  <!-- USERNAME STEP -->
+  <form id="step-username" class="step hidden" autocomplete="off">
+    <div class="tagline">ENTER YOUR UNIQUE IDENTITY</div>
+    <div class="input-group">
+      <i class="fa-solid fa-user left-icon"></i>
+      <input type="text" id="username" placeholder=" " autocomplete="off" />
+      <label for="username">Username</label>
+    </div>
+    <button type="submit" id="confirm-user-btn">CONFIRM USERNAME</button>
+    <div id="user-msg" class="message"></div>
+    <a href="#" id="back-to-email" class="back-link">← REQUEST NEW KEY</a>
+  </form>
 
-        const requestBtn = document.getElementById('request-btn');
-        const confirmUserBtn = document.getElementById('confirm-user-btn');
-        const loginBtn = document.getElementById('login-btn');
+  <!-- PASSWORD STEP -->
+  <form id="step-password" class="step hidden" autocomplete="off">
+    <div class="tagline">ENTER YOUR SECURE PASSWORD</div>
+    <div class="input-group">
+      <i class="fa-solid fa-lock left-icon"></i>
+      <input type="password" id="password" placeholder=" " />
+      <label for="password">Password</label>
+      <i class="fa-solid fa-eye toggle-eye" id="eyeIcon"></i>
+    </div>
+    <button type="submit" id="login-btn">INITIALIZE HANDSHAKE</button>
+    <div id="error-msg" class="message"></div>
+    <div class="session-warning" id="session-warning"></div>
+  </form>
 
-        const reqMsg = document.getElementById('req-msg');
-        const userMsg = document.getElementById('user-msg');
-        const err = document.getElementById('error-msg');
+  <div class="footer">Encrypted Session v2.5</div>
+  <div class="policy-links">
+    <a href="Privacy.html" target="_blank">PRIVACY POLICY</a>
+    <a href="Privacy.html" target="_blank">TERMS OF SERVICE</a>
+  </div>
+</div>
 
-        // Step 1: Request Credentials or Bypass
-        requestBtn.addEventListener('click', async () => {
-            const emailOrKey = document.getElementById('req-email').value;
-            if (!emailOrKey) {
-                reqMsg.style.color = '#ff4d4d';
-                reqMsg.textContent = 'INPUT REQUIRED';
-                reqMsg.style.display = 'block';
-                return;
-            }
+<script>
+(function () {
+  'use strict';
 
-            // MASTER PASSWORD BYPASS
-            if (emailOrKey === 'NEXPROX_DEV_2026') {
-                reqMsg.style.color = '#00ff66';
-                reqMsg.textContent = 'DEV BYPASS ACTIVATED...';
-                reqMsg.style.display = 'block';
-                // Trigger backend bypass
-                fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: 'master', password: emailOrKey })
-                }).then(res => res.json()).then(data => {
-                    if (data.success) {
-                        localStorage.setItem('nx_session', data.token);
-                        localStorage.setItem('nx_node_verified', 'true');
-                        window.location.href = '/index.html';
-                    }
-                }).catch(() => {
-                    reqMsg.style.color = '#ff4d4d';
-                    reqMsg.textContent = 'BACKEND OFFLINE';
-                });
-                return;
-            }
+  const stepEmail    = document.getElementById('step-email');
+  const stepUsername = document.getElementById('step-username');
+  const stepPassword = document.getElementById('step-password');
+  const requestBtn   = document.getElementById('request-btn');
+  const confirmBtn   = document.getElementById('confirm-user-btn');
+  const loginBtn     = document.getElementById('login-btn');
+  const reqMsg       = document.getElementById('req-msg');
+  const userMsg      = document.getElementById('user-msg');
+  const errMsg       = document.getElementById('error-msg');
+  const lockoutBar   = document.getElementById('lockout-bar');
+  const lockoutFill  = document.getElementById('lockout-fill');
 
-            requestBtn.disabled = true;
-            reqMsg.style.color = '#00ff66';
-            reqMsg.textContent = 'DISPATCHING TO SECURE MAIL...';
-            reqMsg.style.display = 'block';
+  /* ── Helper: show message ── */
+  function showMsg(el, text, type) {
+    el.textContent = text;
+    el.className   = 'message ' + (type || '');
+  }
 
-            try {
-                const res = await fetch('/api/auth/request-access', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailOrKey })
-                });
-                const data = await res.json();
+  /* ── Helper: show lockout countdown bar ── */
+  function showLockout(seconds) {
+    lockoutBar.style.display = 'block';
+    lockoutFill.style.animationDuration = seconds + 's';
+    lockoutFill.style.animationName     = 'none';
+    void lockoutFill.offsetHeight; // reflow
+    lockoutFill.style.animationName = 'countdownBar';
+  }
 
-                if (data.success) {
-                    localStorage.setItem('nx_returning_user', 'true');
-                    reqMsg.textContent = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-                        ? 'CODE RETRIEVED FROM LOCAL HANDSHAKE'
-                        : 'CREDENTIALS DISPATCHED. CHECK INBOX.';
+  /* ── Password eye toggle ── */
+  const eyeIcon  = document.getElementById('eyeIcon');
+  const passInput = document.getElementById('password');
+  if (eyeIcon) {
+    eyeIcon.addEventListener('click', () => {
+      const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passInput.setAttribute('type', type);
+      eyeIcon.classList.toggle('fa-eye');
+      eyeIcon.classList.toggle('fa-eye-slash');
+    });
+  }
 
-                    // IF LOCAL DEV DATA IS RETURNED
-                    if (data.credentials) {
-                        document.getElementById('username').value = data.credentials.username;
-                        document.getElementById('password').value = data.credentials.password;
-                        reqMsg.textContent += " (AUTO-FILLED)";
-                    }
+  /* ── STEP 1: Request credentials ── */
+  stepEmail.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('req-email').value.trim();
+    if (!email) { showMsg(reqMsg, 'Email address required.', 'error'); return; }
 
-                    // Transition to step 2 after a successful request
-                    setTimeout(() => {
-                        stepEmail.style.display = 'none';
-                        stepUsername.style.display = 'block';
-                        stepUsername.classList.add('step-transition');
-                    }, 1000);
-                } else {
-                    reqMsg.style.color = '#ff4d4d';
-                    reqMsg.textContent = 'ERROR: ' + (data.message || data.errorDetail || 'COULD NOT SEND. Check Gmail credentials.');
-                }
-            } catch (e) {
-                console.error('Request Error:', e);
-                reqMsg.style.color = '#ff4d4d';
-                reqMsg.textContent = 'SECURE CHANNEL OFFLINE';
-            } finally {
-                requestBtn.disabled = false;
-            }
-        });
+    requestBtn.disabled = true;
+    showMsg(reqMsg, 'DISPATCHING TO SECURE MAIL…', 'info');
+    lockoutBar.style.display = 'none';
 
-        // Toggle Password Visibility
-        const toggleP = document.getElementById('toggle-p');
-        const passInput = document.getElementById('password');
-        toggleP.addEventListener('click', () => {
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            toggleP.classList.toggle('fa-eye');
-            toggleP.classList.toggle('fa-eye-slash');
-        });
+    try {
+      const res  = await fetch('/api/auth/request-access', {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ email })
+      });
+      const data = await res.json();
 
-        // Step 2: Confirm Username
-        confirmUserBtn.addEventListener('click', () => {
-            const u = document.getElementById('username').value;
-            if (!u) {
-                userMsg.style.color = '#ff4d4d';
-                userMsg.textContent = 'USERNAME REQUIRED';
-                userMsg.style.display = 'block';
-                return;
-            }
-            stepUsername.style.display = 'none';
-            stepPassword.style.display = 'block';
-        });
+      if (res.status === 429) {
+        showMsg(reqMsg, data.message || 'Too many requests.', 'warning');
+        if (data.retryAfter) showLockout(data.retryAfter);
+        return;
+      }
 
-        // Step 3: Initialize Handshake (Login)
-        loginBtn.addEventListener('click', function () {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
+      if (data.success) {
+        showMsg(reqMsg, 'CREDENTIALS DISPATCHED. CHECK YOUR INBOX.', 'success');
+        localStorage.setItem('nx_returning_user', 'true');
 
-            if (!u || !p) {
-                err.textContent = 'PLEASE COMPLETE ALL FIELDS';
-                err.style.display = 'block';
-                return;
-            }
-
-            err.textContent = 'INITIATING HANDSHAKE...';
-            err.style.color = '#00ff66';
-            err.style.display = 'block';
-
-            fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: u, password: p })
-            })
-                .then(res => {
-                    if (res.status === 403) {
-                        return res.json().then(d => { throw new Error(d.message || 'IP_LOCK'); });
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        localStorage.setItem('nx_session', data.token);
-                        localStorage.setItem('nx_node_verified', 'true');
-                        window.location.href = '/index.html';
-                    } else {
-                        err.style.color = '#ff4d4d';
-                        err.textContent = 'ACCESS DENIED: ' + (data.message || 'UNRECOGNIZED');
-                        err.style.display = 'block';
-                    }
-                })
-                .catch((e) => {
-                    err.style.color = '#ff4d4d';
-                    err.textContent = e.message.includes('locked') ? e.message : 'BACKEND OFFLINE';
-                    err.style.display = 'block';
-                });
-        });
-
-        // Initialize Returning User State
-        if (localStorage.getItem('nx_returning_user') === 'true' || localStorage.getItem('nx_node_verified') === 'true') {
-            stepEmail.style.display = 'none';
-            stepUsername.style.display = 'block';
+        // Auto-fill on local dev
+        if (data.credentials) {
+          document.getElementById('username').value = data.credentials.username;
+          document.getElementById('password').value = data.credentials.password;
+          showMsg(reqMsg, 'LOCAL DEV: Credentials auto-filled.', 'success');
         }
 
-        // Handle Back button
-        const backToEmail = document.getElementById('back-to-email');
-        if (backToEmail) {
-            backToEmail.addEventListener('click', (e) => {
-                e.preventDefault();
-                stepUsername.style.display = 'none';
-                stepEmail.style.display = 'block';
-            });
-        }
-    </script>
+        setTimeout(() => {
+          stepEmail.classList.add('hidden');
+          stepUsername.classList.remove('hidden');
+        }, 1200);
+      } else {
+        showMsg(reqMsg, data.message || 'Could not send credentials. Try again.', 'error');
+      }
+    } catch (err) {
+      showMsg(reqMsg, 'SECURE CHANNEL OFFLINE — server unreachable.', 'error');
+    } finally {
+      requestBtn.disabled = false;
+    }
+  });
+
+  /* ── STEP 2: Confirm username ── */
+  stepUsername.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = document.getElementById('username').value.trim();
+    if (!u) { showMsg(userMsg, 'Username required.', 'error'); return; }
+    stepUsername.classList.add('hidden');
+    stepPassword.classList.remove('hidden');
+  });
+
+  /* ── STEP 3: Login ── */
+  stepPassword.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value;
+    if (!u || !p) { showMsg(errMsg, 'Please complete all fields.', 'error'); return; }
+
+    loginBtn.disabled = true;
+    showMsg(errMsg, 'INITIATING HANDSHAKE…', 'info');
+
+    try {
+      const res  = await fetch('/api/login', {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ username: u, password: p })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('nx_session', data.token);
+        localStorage.setItem('nx_node_verified', 'true');
+        showMsg(errMsg, 'HANDSHAKE VERIFIED — REDIRECTING…', 'success');
+        setTimeout(() => { window.location.href = '/index.html'; }, 800);
+      } else if (res.status === 403) {
+        showMsg(errMsg, data.message || 'IP LOCK: Login restricted to original device.', 'error');
+        loginBtn.disabled = false;
+      } else {
+        showMsg(errMsg, 'ACCESS DENIED: ' + (data.message || 'Invalid credentials.'), 'error');
+        loginBtn.disabled = false;
+      }
+    } catch (err) {
+      showMsg(errMsg, 'BACKEND OFFLINE — Cannot reach server.', 'error');
+      loginBtn.disabled = false;
+    }
+  });
+
+  /* ── Back to email ── */
+  document.getElementById('back-to-email').addEventListener('click', (e) => {
+    e.preventDefault();
+    stepUsername.classList.add('hidden');
+    stepEmail.classList.remove('hidden');
+  });
+
+  /* ── Restore returning user state ── */
+  if (localStorage.getItem('nx_returning_user') === 'true') {
+    stepEmail.classList.add('hidden');
+    stepUsername.classList.remove('hidden');
+  }
+
+  /* ── Already logged in? Skip to dashboard ── */
+  if (localStorage.getItem('nx_session')) {
+    window.location.href = '/index.html';
+  }
+
+})();
+</script>
 </body>
-
 </html>

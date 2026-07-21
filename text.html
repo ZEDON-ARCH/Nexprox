@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZediX — Innovate · Secure · Excel</title>
+    <meta name="description"
+        content="ZediX — Full-stack engineer building tomorrow's digital experiences. Innovate. Secure. Excel.\" />
+    <meta name="theme-color" content="#8B5CF6" />
+    <meta name="msapplication-TileColor" content="#8B5CF6" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zedix.replit.app/" />
+    <meta property="og:title" content="ZediX — Innovate · Secure · Excel" />
+    <meta property="og:description"
+        content="Full-stack engineer & innovation architect. Building the future. Securing tomorrow.\" />
+    <meta property="og:image" content="/upload/zedix-logo.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="ZediX" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ZediX — Innovate · Secure · Excel" />
+    <meta name="twitter:description"
+        content="Full-stack engineer & innovation architect. Building the future. Securing tomorrow.\" />
+    <meta name="twitter:image" content="/upload/zedix-logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Custom Styling Root Properties */
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #151D30;
+            --accent: #8B5CF6;
+            --accent-hover: #A78BFA;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --border: rgba(139, 92, 246, 0.15);
+        }
+
+        /* Baseline configuration resets omitted for brevity */
+    </style>
+</head>
+
+<body>
+
+    <main class="portfolio-container">
+    </main>
+
+    <script>
+        // Dynamic content Loader targeting Vercel Serverless Functions
+        async function loadData() {
+            try {
+                // Aligned path to ensure routing triggers your vercel.json rewrite rules
+                const res = await fetch('/api/data');
+                if (!res.ok) throw new Error('Network response failure');
+                const s = await res.json();
+
+                if (s) {
+                    // Profile & Identity mapping
+                    if (s.avatar) {
+                        const avatarImg = document.getElementById('avatar-img');
+                        if (avatarImg) avatarImg.src = s.avatar;
+                    }
+
+                    // Site Logo updating
+                    if (s.site_logo) {
+                        const favicon = document.querySelector('link[rel="icon"]');
+                        if (favicon) favicon.href = s.site_logo;
+                    }
+
+                    // CV download link structural setup
+                    if (s.cv_url) {
+                        ['cv-link', 'cv-download-btn'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.href = s.cv_url;
+                                el.style.display = 'inline-block';
+                                el.setAttribute('download', '');
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('loadData execution error:', e);
+            }
+        }
+
+        // Initialize data retrieval
+        loadData();
+
+        // Contact Form Event Handler
+        document.getElementById('contact-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.submit-btn');
+            const notice = document.getElementById('form-notice');
+
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+            notice.className = 'form-notice';
+
+            try {
+                const fd = new FormData(e.target);
+                // Explicit endpoint hitting Vercel's Node runtime via rewrite mapping
+                const res = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(fd))
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    notice.className = 'form-notice ok';
+                    notice.textContent = 'Message sent! I will get back to you soon.';
+                    e.target.reset();
+                } else {
+                    notice.className = 'form-notice err';
+                    notice.textContent = data.error || 'Failed to transmit message.';
+                }
+            } catch (err) {
+                notice.className = 'form-notice err';
+                notice.textContent = 'Network error. Please try again later.';
+            } finally {
+                btn.textContent = 'Send Message';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

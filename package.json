@@ -7,7 +7,13 @@
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "keywords": ["proxy", "dashboard", "tunnel", "socks5", "vpn"],
+  "keywords": [
+    "proxy",
+    "dashboard",
+    "tunnel",
+    "socks5",
+    "vpn"
+  ],
   "author": "Nexprox Team",
   "license": "ISC",
   "engines": {
