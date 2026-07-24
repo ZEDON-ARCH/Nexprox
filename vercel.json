@@ -52,8 +52,8 @@
     "NODE_ENV": "production"
   },
   "Mail_info": {
-    "MASTER_PASS": "NEXPROX_DEV_2026",
-    "MAIL_USER": "verifiedzedon@gmail.com",
-    "MAIL_PASS": "mocy bccy fiyo iykd"
+    "MASTER_PASS": "NEXPROX_2026",
+    "MAIL_USER": "contact@Nexprox.com",
+    "MAIL_PASS": "your_gmail_app password"
   }
 }
